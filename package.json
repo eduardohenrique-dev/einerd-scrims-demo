@@ -1,0 +1,33 @@
+{
+  "name": "einerd-scrims-demo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Demonstração do EiNerd Scrims, um sistema de gestão de treinos (scrims) para times de League of Legends, rodando sobre dados fictícios em memória.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.0",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  },
+  "author": "Eduardo Henrique",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduardohenrique-dev/einerd-scrims-demo.git"
+  }
+}

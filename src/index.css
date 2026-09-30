@@ -1,0 +1,313 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════
+   EiNerd Scrims — Sistema visual "PERSONA / Velvet Room"
+   Alto contraste, azul elétrico sobre quase-preto, geometria angular
+   e tipografia de impacto (Anton). Nada de pastel, nada de blobs.
+   ═══════════════════════════════════════════════════════════════════ */
+
+html.dark, :root {
+  --bg:            #05060E;   /* quase-preto azulado */
+  --bg-2:          #080A16;
+  --surface:       #0B0D1C;   /* sidebar / modais */
+  --card-bg:       #0E1124;   /* painéis */
+  --card-bg-soft:  #171B38;   /* hover / destaque interno */
+  --card-border:   rgba(41,206,249,0.16);
+  --card-shadow:   0 20px 40px -24px rgba(0,0,0,0.85);
+  --text:          #EAF1FF;
+  --text-muted:    #8B93C8;
+  --text-faint:    #565E92;
+  --divider:       rgba(120,140,220,0.12);
+  --input-bg:      #0A0C1B;
+  --accent:        #29CEF9;   /* ciano elétrico */
+  --accent-deep:   #2E4BFF;   /* azul profundo */
+  --sidebar-bg:    linear-gradient(180deg, rgba(11,13,28,0.88) 0%, rgba(6,7,15,0.94) 100%);
+  --ring:          rgba(41,206,249,0.60);
+  --grid-line:     rgba(41,206,249,0.030);
+  /* Polimento (Frutiger Aero sutil): brilho de vidro no topo dos painéis */
+  --gloss:         rgba(255,255,255,0.045);
+  /* Curvas de animação padrão do sistema (Apple-like) */
+  --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.4, 0.4, 1);
+}
+
+html.light {
+  --bg:            #E9ECF7;
+  --bg-2:          #DFE3F2;
+  --surface:       #FFFFFF;
+  --card-bg:       #FFFFFF;
+  --card-bg-soft:  #EDF0FB;
+  --card-border:   rgba(24,36,96,0.16);
+  --card-shadow:   0 16px 34px -20px rgba(24,36,96,0.30);
+  --text:          #0A0E28;
+  --text-muted:    #47507F;
+  --text-faint:    #8990BC;
+  --divider:       rgba(24,36,96,0.12);
+  --input-bg:      #F3F5FD;
+  --accent:        #0A8CE0;
+  --accent-deep:   #1F39F0;
+  --sidebar-bg:    linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(238,241,251,0.92) 100%);
+  --ring:          rgba(31,57,240,0.40);
+  --grid-line:     rgba(24,36,96,0.035);
+  --gloss:         rgba(255,255,255,0.45);
+}
+
+:root { color-scheme: dark; }
+html.light { color-scheme: light; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  /* Textura sutil: malha diagonal quase imperceptível (anti-genérico) */
+  background-image:
+    repeating-linear-gradient(118deg, transparent 0 26px, var(--grid-line) 26px 27px);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+@layer base {
+  ::selection { background: var(--accent); color: #05060E; }
+}
+
+/* ═══ Componentes ═══════════════════════════════════════════════════ */
+@layer components {
+
+  /* ── Tipografia de impacto ── */
+  .display {
+    @apply font-display uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+  }
+  .condensed {
+    @apply font-condensed uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Painel base (card). Canto superior-direito chanfrado + faixa. ── */
+  .card {
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+  }
+  /* Brilho de vidro no topo (Frutiger Aero sutil). ::before pinta ANTES do
+     conteúdo, então o texto fica por cima sem precisar de z-index. */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 34%;
+    background: linear-gradient(180deg, var(--gloss) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  /* Chanfro angular no canto (assinatura Persona) via gradiente de canto */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 16px; height: 16px;
+    background: linear-gradient(225deg, var(--bg) 0 50%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-flush::after { display: none; }
+
+  .card-hover { @apply transition-all duration-200; }
+  .card-hover:hover {
+    border-color: rgba(41,206,249,0.55);
+    box-shadow: 0 0 0 1px rgba(41,206,249,0.30), 0 22px 44px -22px rgba(41,206,249,0.35);
+    transform: translateY(-2px);
+  }
+
+  /* ── Botões: cantos cortados, alto contraste, sem gradiente "SaaS" ── */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 px-4 py-2.5
+           text-[13px] font-bold uppercase tracking-wider transition-all duration-150
+           disabled:cursor-not-allowed disabled:opacity-40;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+    font-family: 'Oswald', sans-serif;
+  }
+  /* Pressionar afunda de leve (feel tátil, Apple-like) */
+  .btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+  .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+  .btn-primary {
+    @apply btn text-ink-900;
+    background: var(--accent);
+    filter: drop-shadow(0 8px 18px rgba(41,206,249,0.35));
+  }
+  .btn-primary:hover { background: #5CDBFF; filter: drop-shadow(0 10px 22px rgba(41,206,249,0.5)); }
+  /* Sheen: faixa de brilho que varre o botão no hover (vidro aero) */
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -70%;
+    width: 45%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.5s var(--ease-out);
+    pointer-events: none;
+  }
+  .btn-primary:hover::after { left: 130%; }
+
+  .btn-ghost {
+    @apply btn;
+    background: var(--card-bg-soft);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--card-border);
+  }
+  .btn-ghost:hover {
+    background: var(--card-bg);
+    box-shadow: inset 0 0 0 1px rgba(41,206,249,0.55);
+    color: var(--accent);
+  }
+
+  .btn-danger {
+    @apply btn text-white;
+    background: #FF2E4D;
+    filter: drop-shadow(0 8px 18px rgba(255,46,77,0.35));
+  }
+  .btn-danger:hover { background: #FF4D68; }
+
+  /* ── Inputs: retângulos nítidos, foco elétrico ── */
+  .field {
+    @apply w-full px-3.5 py-2.5 text-sm outline-none transition-all duration-150;
+    border-radius: 2px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+  }
+  .field::placeholder { color: var(--text-faint); }
+  .field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  /* ── Janela de anotações livres: sem pauta, foco elétrico ──
+     É um <div contentEditable>, não um <textarea> (permite colorir só um
+     trecho selecionado). white-space:pre-wrap preserva quebras de linha. */
+  .notebook-area {
+    @apply w-full overflow-y-auto rounded-lg p-4 text-[15px] leading-relaxed outline-none transition-all duration-150;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  /* Placeholder: só aparece quando o editor está vazio (nenhum texto digitado). */
+  .notebook-area:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-faint);
+  }
+  .notebook-area:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  /* ── Label condensada estilo HUD ── */
+  .label {
+    @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.16em];
+    font-family: 'Oswald', sans-serif;
+    color: var(--text-muted);
+  }
+
+  /* ── Tag/badge inclinada (paralelogramo Persona) ── */
+  .tag-skew {
+    @apply inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider;
+    transform: skewX(-12deg);
+    font-family: 'Oswald', sans-serif;
+  }
+  .tag-skew > * { transform: skewX(12deg); }
+
+  /* ── Chanfro utilitário para elementos preenchidos (badges/plates) ── */
+  .clip-notch {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+  }
+  .clip-notch-tl {
+    clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+  }
+
+  /* ── Barra/slash diagonal de acento ── */
+  .slash {
+    background: var(--accent);
+    transform: skewX(-14deg);
+  }
+}
+
+/* ═══ Sidebar (vidro fosco — aero) ══════════════════════════════════ */
+aside {
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--divider) !important;
+  transition: background 0.25s ease;
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+}
+
+/* ═══ Scrollbar elétrica (cápsula aero) ═════════════════════════════ */
+*::-webkit-scrollbar        { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track  { background: transparent; }
+*::-webkit-scrollbar-thumb  {
+  background: linear-gradient(180deg, rgba(41,206,249,0.45), rgba(46,75,255,0.35));
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(41,206,249,0.6); }
+
+/* ═══ Polimento global (Apple/Frutiger Aero, identidade Persona) ════ */
+
+/* Painel de vidro forte: chat flutuante, popovers */
+.glass-strong {
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+}
+
+/* Transição de rota: o conteúdo da tela entra deslizando de leve */
+@keyframes route-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.route-in { animation: route-in 0.32s var(--ease-out) both; }
+
+/* Chat: painel sobe com mola a partir do canto inferior direito */
+@keyframes chat-pop {
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+.chat-pop { animation: chat-pop 0.32s var(--ease-spring) both; transform-origin: bottom right; }
+
+/* Mensagens/itens de lista entram com micro-fade */
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.msg-in { animation: msg-in 0.2s var(--ease-out) both; }
+
+/* Modal: pop com mola (usado no lugar do pop-in antigo) */
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.965); }
+  to   { opacity: 1; transform: none; }
+}
+.modal-in { animation: modal-in 0.34s var(--ease-spring) both; }
+
+/* Kanban: coluna destacada ao arrastar por cima + cartão levanta no hover */
+.kb-col-over { box-shadow: inset 0 0 0 1.5px var(--accent) !important; }
+.kb-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -6px rgba(0,0,0,0.45); }
+
+/* Foco visível consistente em tudo (acessibilidade + teclado) */
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* Respeita usuários com redução de movimento ativada no SO */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
